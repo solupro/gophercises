@@ -28,7 +28,7 @@ func main() {
 	//t := reflect.TypeOf(a)
 	//
 	//fmt.Println(a, t.Kind())
-	
+
 	addOne := closures(1)
 	fmt.Println(addOne())
 	fmt.Println(addOne())
@@ -47,8 +47,8 @@ func closures(step int) func() int {
 	var i int
 
 	return func() int {
-		i += step;
-		return i;
+		i += step
+		return i
 	}
 }
 
