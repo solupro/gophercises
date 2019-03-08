@@ -1,18 +1,29 @@
 package main
 
 import (
+	"encoding/json"
 	"github.com/fatedier/frp/utils/log"
-	yaml2 "gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v2"
 	"net/http"
 )
 
-func YAMLHandler(yaml []byte, fallback *http.ServeMux) (*http.ServeMux, error) {
+func YAMLHandler(content []byte, fallback http.Handler) (http.HandlerFunc, error) {
 	yamlConfig := []Config{}
-	err := yaml2.Unmarshal(yaml, &yamlConfig)
+	err := yaml.Unmarshal(content, &yamlConfig)
 	if err != nil {
 		return nil, err
 	}
 	pathMap := buildMap(yamlConfig)
+	return MapHandler(pathMap, fallback), nil
+}
+
+func JSONHandler(content []byte, fallback http.Handler) (http.HandlerFunc, error) {
+	jsonConfig := []Config{}
+	err := json.Unmarshal(content, &jsonConfig)
+	if err != nil {
+		return nil, err
+	}
+	pathMap := buildMap(jsonConfig)
 	return MapHandler(pathMap, fallback), nil
 }
 
@@ -25,14 +36,13 @@ func buildMap(c []Config) map[string]string {
 	return m
 }
 
-func MapHandler(m map[string]string, mux *http.ServeMux) *http.ServeMux {
-	for path, url := range m {
-		toUrl := url
-		mux.HandleFunc(path, func(w http.ResponseWriter, r *http.Request) {
-			log.Info("redirect to %s", toUrl)
-			http.Redirect(w, r, toUrl, http.StatusTemporaryRedirect)
-		})
+func MapHandler(m map[string]string, fallback http.Handler) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if url, ok := m[r.URL.Path]; ok {
+			log.Info("redirect to %s", url)
+			http.Redirect(w, r, url, http.StatusTemporaryRedirect)
+		} else {
+			fallback.ServeHTTP(w, r)
+		}
 	}
-
-	return mux
 }
