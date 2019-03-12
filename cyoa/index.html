@@ -9,11 +9,17 @@
     .contain {
         width: 600px;
     }
+    .content {
+        text-indent: 20px;
+    }
+    .title {
+        text-align: center;
+    }
 </style>
-<h1>{{ .Title }}</h1>
 <div class="contain">
+    <h1 class="title">{{ .Title }}</h1>
     {{ range .Story }}
-        <p>{{ . }}</p>
+        <p class="content">{{ . }}</p>
     {{ end }}
 
     <h2>Options</h2>
