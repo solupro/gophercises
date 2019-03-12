@@ -2,9 +2,11 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 )
 
 func main() {
+	// ex1
 	//timer := time.NewTimer(time.Duration(3) * time.Second)
 	//
 	//ch := make(chan int)
@@ -22,25 +24,58 @@ func main() {
 	//}
 	//
 	//fmt.Println("finish")
-	//
+
+	// ex2
 	//a := [3]string{"12", "#54", "#12"}
 	//
 	//t := reflect.TypeOf(a)
 	//
 	//fmt.Println(a, t.Kind())
 
-	addOne := closures(1)
-	fmt.Println(addOne())
-	fmt.Println(addOne())
-	fmt.Println(addOne())
+	// ex3
+	//addOne := closures(1)
+	//fmt.Println(addOne())
+	//fmt.Println(addOne())
+	//fmt.Println(addOne())
+	//
+	//addTwo := closures(2)
+	//fmt.Println(addTwo())
+	//fmt.Println(addTwo())
+	//fmt.Println(addTwo())
+	//
+	//fmt.Println(fact(7))
 
-	addTwo := closures(2)
-	fmt.Println(addTwo())
-	fmt.Println(addTwo())
-	fmt.Println(addTwo())
+	// ex4
+	//http.ListenAndServe(":8081", &Me{"/hello"})
 
-	fmt.Println(fact(7))
+	// ex5
+	//piCh := make(chan string)
+	//poCh := make(chan string)
+	//
+	//go ping(piCh, "hello world")
+	//go pong(poCh, piCh)
+	//fmt.Println(<-poCh)
 
+	// ex6
+
+}
+
+func ping(piCh chan<- string, msg string) {
+	piCh <- msg
+}
+
+func pong(poCh chan<- string, piCh <-chan string) {
+	poCh <- <-piCh
+}
+
+type Me struct {
+	path string
+}
+
+func (m *Me) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path == m.path {
+		fmt.Fprint(w, "hello 123")
+	}
 }
 
 func closures(step int) func() int {

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ .Title }}</title>
+</head>
+<body>
+<style>
+    .contain {
+        width: 600px;
+    }
+</style>
+<h1>{{ .Title }}</h1>
+<div class="contain">
+    {{ range .Story }}
+        <p>{{ . }}</p>
+    {{ end }}
+
+    <h2>Options</h2>
+    <ul>
+        {{ if .Options }}
+        {{range .Options }}
+            <li><a href="/{{ .Arc }}">{{ .Text }}</a></li>
+        {{ end }}
+        {{ else }}
+            <li><a href="/">Back to Intro</a></li>
+        {{ end }}
+    </ul>
+
+</div>
+</body>
+</html>
