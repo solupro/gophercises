@@ -21,8 +21,8 @@ func main() {
 		panic(err)
 	}
 
-	gopher := make(map[string]Chapter)
-	err = json.Unmarshal(jsonFile, &gopher)
+	story := Story{}
+	err = json.Unmarshal(jsonFile, &story)
 	if err != nil {
 		panic(err)
 	}
@@ -34,7 +34,7 @@ func main() {
 		}
 		log.Info("accept %s", arc)
 
-		if chapter, ok := gopher[arc]; ok {
+		if chapter, ok := story[arc]; ok {
 			temp, err := template.ParseFiles("index.html")
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -49,6 +49,8 @@ func main() {
 	http.ListenAndServe(":8080", nil)
 
 }
+
+type Story map[string]Chapter
 
 type Chapter struct {
 	Title   string   `json:"title"`
