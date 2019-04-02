@@ -26,7 +26,7 @@ func main() {
 
 func findA(node *html.Node, result []Link) []Link {
 	for c := node.FirstChild; c != nil; c = c.NextSibling {
-		if c.Data == "a" {
+		if c.Data == "a" && c.Type == html.ElementNode {
 			link := Link{}
 
 			if c.FirstChild != nil && c.FirstChild.Type == html.TextNode {
