@@ -1,27 +1,29 @@
-package main
+package link
 
 import (
-	"fmt"
 	"golang.org/x/net/html"
-	"os"
+	"io"
+	"net/http"
 	"strings"
 )
 
-func main() {
-	f, err := os.Open("./ex2.html")
+func ParseHTML(url string) ([]Link, error) {
+	resp, err := http.Get(url)
 	if err != nil {
-		panic(err)
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	return Parse(resp.Body)
+}
+
+func Parse(reader io.Reader) ([]Link, error) {
+	node, err := html.Parse(reader)
+	if err != nil {
+		return nil, err
 	}
 
-	node, err := html.Parse(f)
-	if err != nil {
-		panic(err)
-	}
-
-	list := []Link{}
-	list = findA(node, list)
-
-	fmt.Printf("%+v", list)
+	return findA(node, []Link{}), nil
 }
 
 func findA(node *html.Node, result []Link) []Link {
