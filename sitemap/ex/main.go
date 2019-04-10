@@ -25,7 +25,7 @@ func main() {
 	}
 
 	host = urlInfo.Host
-	links := make(map[string]int)
+	links := make(map[string]struct{})
 	parse(url, links)
 
 	s := sitemap.NewSiteMap()
@@ -39,12 +39,12 @@ func main() {
 	}
 }
 
-func parse(url string, links map[string]int) {
+func parse(url string, links map[string]struct{}) {
 	if _, ok := links[url]; ok {
 		//fmt.Println(ok, url)
 		return
 	}
-	links[url] = 1
+	links[url] = struct{}{}
 
 	//fmt.Println("parse:", url)
 	urls, err := link.ParseHTML(url)

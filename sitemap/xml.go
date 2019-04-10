@@ -6,29 +6,28 @@ import (
 	"os"
 )
 
-type Sitemap struct {
-	Urlset xml.Name `xml:"urlset"`
-	Xmlns  string   `xml:"xmlns,attr"`
-	URLs   []*URL   `xml:"url"`
+type urlset struct {
+	Xmlns string `xml:"xmlns,attr"`
+	URLs  []*URL `xml:"url"`
 }
 
 type URL struct {
 	Loc string `xml:"loc"`
 }
 
-func NewSiteMap() *Sitemap {
-	return &Sitemap{
+func NewSiteMap() *urlset {
+	return &urlset{
 		Xmlns: "http://www.sitemaps.org/schemas/sitemap/0.9",
 		URLs:  make([]*URL, 0),
 	}
 }
 
-func (s *Sitemap) AppendURL(url string) {
+func (s *urlset) AppendURL(url string) {
 	s.URLs = append(s.URLs, &URL{Loc: url})
 }
 
-func (s *Sitemap) SaveTo(path string) error {
-	data, err := xml.Marshal(*s)
+func (s *urlset) SaveTo(path string) error {
+	data, err := xml.MarshalIndent(*s, "", "  ")
 	if err != nil {
 		return err
 	}
