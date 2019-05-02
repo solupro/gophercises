@@ -1,9 +1,11 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"math/rand"
 	"net/http"
+	"strconv"
 	"sync"
 	"time"
 )
@@ -268,6 +270,34 @@ func main() {
 	//for _ = range merge(cCh1, cCh2, cCh3, cCh4) {
 	//	//fmt.Println(num)
 	//}
+	bg := context.Background()
+	ctx1, _ := context.WithTimeout(bg, 10*time.Second)
+	ctx2, _ := context.WithTimeout(ctx1, 2*time.Second)
+
+	for i := 0; i < 2; i++ {
+		select {
+		case <-ctx1.Done():
+			fmt.Println("ctx1 done")
+		case <-ctx2.Done():
+			fmt.Println("ctx2 done")
+		}
+	}
+}
+
+func timeFormat(s string) string {
+	l := len(s)
+	flag := s[l-2:]
+	s = s[:l-2]
+	hour, _ := strconv.Atoi(s[:2])
+
+	if (flag == "AM" && hour != 12) || (flag == "PM" && hour == 12) {
+		return s
+	}
+
+	hour = (hour + 12) % 24
+	s = s[2:]
+
+	return fmt.Sprintf("%02d%s", hour, s)
 }
 
 func product(n int) <-chan int {
